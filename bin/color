@@ -1,0 +1,103 @@
+#!/usr/bin/env node
+
+/*global console*/
+
+var onecolor = require('onecolor'),
+	proto = onecolor.RGB.prototype,
+	color = onecolor(process.argv.splice(2, 1)[0]),
+	help = function () {
+		console.error(__filename.replace(__dirname + '/', '') + ' colorString [function [arguments]]');
+		console.error('API:\n\t' + Object.keys(proto).map(function (key) {
+			if (typeof proto[key] === 'function') {
+				return key + ' (' + proto[key].toString().split('\n').shift().match(/\((.*)\)/)[1].replace(/, */, ', ') + ')';
+			}
+			return '';
+		}).join('\n\t').replace('\n\t\n\t', '\n\t'));
+		process.exit(1);
+	},
+	args = process.argv.slice(2).map(function (arg) {
+		if (typeof proto[arg] === 'function') {
+			return proto[arg];
+		} else if (arg.indexOf('%') !== -1) {
+			return parseFloat(arg) / 100;
+		} else if (arg.toLowerCase() === 'true') {
+			return true;
+		} else {
+			var color = onecolor(arg);
+			if (color) {
+				return color;
+			} else if (!isNaN(parseFloat(arg))) {
+				return parseFloat(arg);
+			} else if (arg.indexOf('-') === 0) {
+				help();
+			}
+			return arg;
+		}
+	}),
+    fn,
+    fnArgs = [];
+
+if (!color) {
+	help();
+} else {
+	proto = color.constructor.prototype;
+}
+
+onecolor.installMethod('dump', function () {
+	var prettify = function (color) {
+		return color.toString().split(' ').slice(1).map(function (item) {
+			item = item.split('=');
+			var times = item[0] === 'hue' ? 360 :
+						['saturation', 'value', 'lightness', 'alpha'].indexOf(item[0]) !== -1 ? 100 : 255;
+			return item[0].replace(/^./, function (match) {
+				return match.toUpperCase();
+			}) + ': ' + Math.round(parseFloat(item[1]) * times);
+		}).join('\n\t');
+	};
+	return [
+		['Hex', this.hex()],
+		['CSS', this.css()],
+		['CSSA', this.cssa()],
+		['RGB', prettify(this.rgb())],
+		['HSV', prettify(this.hsv())],
+		['HSL', prettify(this.hsl())],
+		['CMYK', prettify(this.cmyk())],
+		['JSON', JSON.stringify(this.toJSON())]
+	].map(function (item) {
+		return item.join(':\t');
+	}).join('\n');
+});
+
+args.every(function (arg) {
+	if (typeof arg === 'function') {
+		if (fn) {
+
+			color = fn.apply(color, fnArgs);
+			fn = undefined;
+			fnArgs = [];
+			if (!color.isColor) {
+				return false;
+			}
+		}
+		fn = arg;
+	} else if (fn) {
+		fnArgs.push(arg);
+	}
+	return true;
+});
+
+if (fn) {
+	try {
+		color = fn.apply(color, fnArgs);
+	} catch (err) {
+		console.error(color, fnArgs);
+		console.error(err.message);
+		process.exit(1);
+	}
+}
+
+if (color.isColor) {
+	console.log(color.dump());
+} else {
+	console.log(color);
+}

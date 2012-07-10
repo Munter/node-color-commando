@@ -1,0 +1,25 @@
+{
+    "author": "Peter Müller <munter@fumle.dk> (http://fumle.dk)",
+    "name": "color-commando",
+    "description": "Do color calculations while going commando! Command line interface is all anyone ever needed anyway!",
+    "version": "0.0.1",
+    "homepage": "http://github.com/Munter/node-color-commando",
+    "repository": {
+        "url": "https://github.com/Munter/node-color-commando.git"
+    },
+    "main": "index.js",
+    "scripts": {
+        "test": "vows"
+    },
+    "directories": {
+        "bin": "./bin"
+    },
+    "dependencies": {
+        "onecolor": ">=2.2.7"
+    },
+    "devDependencies": {},
+    "optionalDependencies": {},
+    "engines": {
+        "node": "*"
+    }
+}
