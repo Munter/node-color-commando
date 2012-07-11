@@ -15,32 +15,34 @@ var onecolor = require('onecolor'),
 		}).join('\n\t').replace('\n\t\n\t', '\n\t'));
 		process.exit(1);
 	},
+	_lastArg,
 	args = process.argv.slice(2).map(function (arg) {
-		if (typeof proto[arg] === 'function') {
-			return proto[arg];
+		var ret;
+		if (typeof proto[arg] === 'function' && _lastArg !== '!mix' && _lastArg !== '!equals') {
+			ret = '!' + arg;
 		} else if (arg.indexOf('%') !== -1) {
-			return parseFloat(arg) / 100;
+			ret = parseFloat(arg) / 100;
 		} else if (arg.toLowerCase() === 'true') {
-			return true;
+			ret = true;
 		} else {
 			var color = onecolor(arg);
 			if (color) {
-				return color;
+				ret = color;
 			} else if (!isNaN(parseFloat(arg))) {
-				return parseFloat(arg);
+				ret = parseFloat(arg);
 			} else if (arg.indexOf('-') === 0) {
 				help();
 			}
-			return arg;
 		}
+
+		_lastArg = ret;
+		return ret;
 	}),
     fn,
     fnArgs = [];
 
 if (!color) {
 	help();
-} else {
-	proto = color.constructor.prototype;
 }
 
 onecolor.installMethod('dump', function () {
@@ -69,10 +71,19 @@ onecolor.installMethod('dump', function () {
 });
 
 args.every(function (arg) {
-	if (typeof arg === 'function') {
+	if (typeof arg === 'string' && arg.indexOf('!') === 0) {
 		if (fn) {
-
-			color = fn.apply(color, fnArgs);
+			try {
+				color = color.constructor.prototype[fn.replace('!', '')].apply(color, fnArgs);
+			} catch (err) {
+				console.error(JSON.stringify({
+					"color": color,
+					"function": fn,
+					"arguments": fnArgs,
+					"next function": arg
+				}, null, 4));
+				throw err;
+			}
 			fn = undefined;
 			fnArgs = [];
 			if (!color.isColor) {
@@ -88,15 +99,18 @@ args.every(function (arg) {
 
 if (fn) {
 	try {
-		color = fn.apply(color, fnArgs);
+		color = color.constructor.prototype[fn.replace('!', '')].apply(color, fnArgs);
 	} catch (err) {
-		console.error(color, fnArgs);
-		console.error(err.message);
-		process.exit(1);
+		console.error(JSON.stringify({
+			"color": color,
+			"function": fn,
+			"arguments": fnArgs
+		}, null, 4));
+		throw err;
 	}
 }
 
-if (color.isColor) {
+if (typeof color === 'object' && color.isColor) {
 	console.log(color.dump());
 } else {
 	console.log(color);
