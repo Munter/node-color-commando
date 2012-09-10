@@ -14,7 +14,7 @@
         "bin": "./bin"
     },
     "dependencies": {
-        "onecolor": ">=2.2.7"
+        "onecolor": ">=2.3.0"
     },
     "devDependencies": {},
     "optionalDependencies": {},
