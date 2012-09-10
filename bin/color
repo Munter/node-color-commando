@@ -5,21 +5,31 @@
 var onecolor = require('onecolor'),
 	proto = onecolor.RGB.prototype,
 	color = onecolor(process.argv.splice(2, 1)[0]),
-	help = function () {
+	fnMap = {};
+
+Object.keys(proto).forEach(function (key) {
+	if (typeof proto[key] === 'function') {
+		if (key === 'toJSON') {
+			fnMap.json = key;
+		} else if (key !== 'toString' && key !== 'valueOf') {
+			fnMap[key.toLowerCase()] = key;
+		}
+	}
+});
+
+var	help = function () {
 		console.error(__filename.replace(__dirname + '/', '') + ' colorString [function [arguments]]');
-		console.error('API:\n\t' + Object.keys(proto).map(function (key) {
-			if (typeof proto[key] === 'function') {
-				return key + ' (' + proto[key].toString().split('\n').shift().match(/\((.*)\)/)[1].replace(/, */, ', ') + ')';
-			}
-			return '';
+		console.error('API:\n\t' + Object.keys(fnMap).map(function (key) {
+			return key + ' (' + proto[fnMap[key]].toString().split('\n').shift().match(/\((.*)\)/)[1].replace(/, */, ', ') + ')';
 		}).join('\n\t').replace('\n\t\n\t', '\n\t'));
 		process.exit(1);
 	},
 	_lastArg,
 	args = process.argv.slice(2).map(function (arg) {
 		var ret;
-		if (typeof proto[arg] === 'function' && _lastArg !== '!mix' && _lastArg !== '!equals') {
-			ret = '!' + arg;
+		arg = arg.toLowerCase();
+		if (fnMap[arg] && _lastArg !== '!mix' && _lastArg !== '!equals') {
+			ret = '!' + arg.toLowerCase();
 		} else if (arg.indexOf('%') !== -1) {
 			ret = parseFloat(arg) / 100;
 		} else if (arg.toLowerCase() === 'true') {
@@ -74,7 +84,7 @@ args.every(function (arg) {
 	if (typeof arg === 'string' && arg.indexOf('!') === 0) {
 		if (fn) {
 			try {
-				color = color.constructor.prototype[fn.replace('!', '')].apply(color, fnArgs);
+				color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
 			} catch (err) {
 				console.error(JSON.stringify({
 					"color": color,
@@ -99,7 +109,7 @@ args.every(function (arg) {
 
 if (fn) {
 	try {
-		color = color.constructor.prototype[fn.replace('!', '')].apply(color, fnArgs);
+		color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
 	} catch (err) {
 		console.error(JSON.stringify({
 			"color": color,
