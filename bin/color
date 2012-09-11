@@ -26,7 +26,8 @@ var	help = function () {
 	},
 	_lastArg,
 	args = process.argv.slice(2).map(function (arg) {
-		var ret;
+		var ret,
+			color;
 		arg = arg.toLowerCase();
 		if (fnMap[arg] && _lastArg !== '!mix' && _lastArg !== '!equals') {
 			ret = '!' + arg.toLowerCase();
@@ -35,7 +36,7 @@ var	help = function () {
 		} else if (arg.toLowerCase() === 'true') {
 			ret = true;
 		} else {
-			var color = onecolor(arg);
+			color = onecolor(arg);
 			if (color) {
 				ret = color;
 			} else if (!isNaN(parseFloat(arg))) {
