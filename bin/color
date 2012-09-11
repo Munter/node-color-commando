@@ -125,4 +125,10 @@ if (typeof color === 'object' && color.isColor) {
 	console.log(color.dump());
 } else {
 	console.log(color);
+	if (color === false) {
+		process.exit(1);
+	}
+	if (color === true) {
+		process.exit(0);
+	}
 }
