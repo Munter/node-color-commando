@@ -75,7 +75,7 @@ The general usage of `color` follows this pattern:
 
     * `negate`: Negates the color
     * `mix <othercolor> [<weight>]`: Mixes color and othercolor by the given optional weight. Defaults to 0.5
-    * `rotate <degrees>`: Rotates the hue by [0;360] degrees on the hue circle
+    * `rotate <°>`: Rotates the hue by [0;360]° on the hue circle
     * `toalpha <othercolor>`: Converts othercolor to alpha in the original color
 
 *Output format* is optional and can be any of the following
@@ -83,4 +83,4 @@ The general usage of `color` follows this pattern:
 * `css`: Returns the color value in CSS RGB-notation. `rgb(red, green, blue)`
 * `cssa`: Returns the color value in CSS RGBA-notation with alpha channel. `rgba(red, green, blue, alpha)`
 * `json`: Returns the color vlaue serialized as a json array with a syntax that [one-color](https://github.com/One-com/one-color) understands. Useful for not losing precision across serialization.
-* `equals <othercolor> [<epsilon>]`: Return the string true if color equals othercolor within the optional margin epsilon (defaults to `1e-10`)
+* `equals <othercolor> [<ε>]`: Return the string true if color equals othercolor within the optional margin ε (defaults to `1e-10`)
