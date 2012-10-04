@@ -8,7 +8,7 @@ If you know what you want out of your color math, using a color picker and apply
 Installation
 ============
 ```
-npm install
+npm install color-commando
 ```
 
 Yes, node is a prerequisite. If you are a web developer you [installed it already](https://github.com/joyent/node/wiki/Installation), didn't you?
