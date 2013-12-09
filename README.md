@@ -84,3 +84,7 @@ The general usage of `color` follows this pattern:
 * `cssa`: Returns the color value in CSS RGBA-notation with alpha channel. `rgba(red, green, blue, alpha)`
 * `json`: Returns the color vlaue serialized as a json array with a syntax that [one-color](https://github.com/One-com/one-color) understands. Useful for not losing precision across serialization.
 * `equals <othercolor> [<ε>]`: Return the string true if color equals othercolor within the optional margin ε (defaults to `1e-10`)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Munter/node-color-commando/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
