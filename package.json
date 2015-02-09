@@ -1,24 +1,27 @@
 {
-    "author": "Peter Müller <munter@fumle.dk> (http://fumle.dk)",
-    "name": "color-commando",
-    "description": "Do color calculations while going commando! Command line interface is all anyone ever needed anyway!",
-    "version": "0.1.3",
-    "homepage": "http://github.com/Munter/node-color-commando",
-    "repository": {
-        "url": "https://github.com/Munter/node-color-commando.git"
-    },
-    "main": "index.js",
-    "scripts": {
-    },
-    "directories": {
-        "bin": "./bin"
-    },
-    "dependencies": {
-        "onecolor": ">=2.3.0"
-    },
-    "devDependencies": {},
-    "optionalDependencies": {},
-    "engines": {
-        "node": "*"
-    }
+  "author": "Peter Müller <munter@fumle.dk> (http://fumle.dk)",
+  "name": "color-commando",
+  "description": "Do color calculations while going commando! Command line interface is all anyone ever needed anyway!",
+  "version": "0.1.3",
+  "homepage": "http://github.com/Munter/node-color-commando",
+  "repository": {
+    "url": "https://github.com/Munter/node-color-commando.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "jshint . bin/*"
+  },
+  "directories": {
+    "bin": "./bin"
+  },
+  "dependencies": {
+    "onecolor": ">=2.3.0"
+  },
+  "devDependencies": {
+    "jshint": "^2.6.0"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
 }

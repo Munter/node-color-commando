@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*global console*/
+'use strict';
 
 var onecolor = require('onecolor'),
     proto = onecolor.RGB.prototype,
@@ -88,10 +88,10 @@ args.every(function (arg) {
                 color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
             } catch (err) {
                 console.error(JSON.stringify({
-                    "color": color,
-                    "function": fn,
-                    "arguments": fnArgs,
-                    "next function": arg
+                    'color': color,
+                    'function': fn,
+                    'arguments': fnArgs,
+                    'next function': arg
                 }, null, 4));
                 throw err;
             }
@@ -113,9 +113,9 @@ if (fn) {
         color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
     } catch (err) {
         console.error(JSON.stringify({
-            "color": color,
-            "function": fn,
-            "arguments": fnArgs
+            'color': color,
+            'function': fn,
+            'arguments': fnArgs
         }, null, 4));
         throw err;
     }
