@@ -3,132 +3,132 @@
 'use strict';
 
 var onecolor = require('onecolor'),
-    proto = onecolor.RGB.prototype,
-    color = onecolor(process.argv.splice(2, 1)[0]),
-    fnMap = {};
+  proto = onecolor.RGB.prototype,
+  color = onecolor(process.argv.splice(2, 1)[0]),
+  fnMap = {};
 
 Object.keys(proto).forEach(function (key) {
-    if (typeof proto[key] === 'function') {
-        if (key === 'toJSON') {
-            fnMap.json = key;
-        } else if (key !== 'toString' && key !== 'valueOf') {
-            fnMap[key.toLowerCase()] = key;
-        }
+  if (typeof proto[key] === 'function') {
+    if (key === 'toJSON') {
+      fnMap.json = key;
+    } else if (key !== 'toString' && key !== 'valueOf') {
+      fnMap[key.toLowerCase()] = key;
     }
+  }
 });
 
 var help = function () {
-        console.error(__filename.replace(__dirname + '/', '') + ' colorString [function [arguments]]');
-        console.error('API:\n\t' + Object.keys(fnMap).map(function (key) {
-            return key + ' (' + proto[fnMap[key]].toString().split('\n').shift().match(/\((.*)\)/)[1].replace(/, */, ', ') + ')';
-        }).join('\n\t').replace('\n\t\n\t', '\n\t'));
-        process.exit(1);
-    },
-    _lastArg,
-    args = process.argv.slice(2).map(function (arg) {
-        var ret,
-            color;
-        arg = arg.toLowerCase();
-        if (fnMap[arg] && _lastArg !== '!mix' && _lastArg !== '!equals') {
-            ret = '!' + arg.toLowerCase();
-        } else if (arg.indexOf('%') !== -1) {
-            ret = parseFloat(arg) / 100;
-        } else if (arg.toLowerCase() === 'true') {
-            ret = true;
-        } else {
-            color = onecolor(arg);
-            if (color) {
-                ret = color;
-            } else if (!isNaN(parseFloat(arg))) {
-                ret = parseFloat(arg);
-            } else if (arg.indexOf('-') === 0) {
-                help();
-            }
-        }
+    console.error(__filename.replace(__dirname + '/', '') + ' colorString [function [arguments]]');
+    console.error('API:\n\t' + Object.keys(fnMap).map(function (key) {
+      return key + ' (' + proto[fnMap[key]].toString().split('\n').shift().match(/\((.*)\)/)[1].replace(/, */, ', ') + ')';
+    }).join('\n\t').replace('\n\t\n\t', '\n\t'));
+    process.exit(1);
+  },
+  _lastArg,
+  args = process.argv.slice(2).map(function (arg) {
+    var ret,
+      color;
+    arg = arg.toLowerCase();
+    if (fnMap[arg] && _lastArg !== '!mix' && _lastArg !== '!equals') {
+      ret = '!' + arg.toLowerCase();
+    } else if (arg.indexOf('%') !== -1) {
+      ret = parseFloat(arg) / 100;
+    } else if (arg.toLowerCase() === 'true') {
+      ret = true;
+    } else {
+      color = onecolor(arg);
+      if (color) {
+        ret = color;
+      } else if (!isNaN(parseFloat(arg))) {
+        ret = parseFloat(arg);
+      } else if (arg.indexOf('-') === 0) {
+        help();
+      }
+    }
 
-        _lastArg = ret;
-        return ret;
-    }),
-    fn,
-    fnArgs = [];
+    _lastArg = ret;
+    return ret;
+  }),
+  fn,
+  fnArgs = [];
 
 if (!color) {
-    help();
+  help();
 }
 
 onecolor.installMethod('dump', function () {
-    var prettify = function (color) {
-        return color.toString().split(' ').slice(1).map(function (item) {
-            item = item.split('=');
-            var times = item[0] === 'hue' ? 360 :
-                        ['saturation', 'value', 'lightness', 'alpha'].indexOf(item[0]) !== -1 ? 100 : 255;
-            return item[0].replace(/^./, function (match) {
-                return match.toUpperCase();
-            }) + ': ' + Math.round(parseFloat(item[1]) * times);
-        }).join('\n\t');
-    };
-    return [
-        ['Hex', this.hex()],
-        ['CSS', this.css()],
-        ['CSSA', this.cssa()],
-        ['RGB', prettify(this.rgb())],
-        ['HSV', prettify(this.hsv())],
-        ['HSL', prettify(this.hsl())],
-        ['CMYK', prettify(this.cmyk())],
-        ['JSON', JSON.stringify(this.toJSON())]
-    ].map(function (item) {
-        return item.join(':\t');
-    }).join('\n');
+  var prettify = function (color) {
+    return color.toString().split(' ').slice(1).map(function (item) {
+      item = item.split('=');
+      var times = item[0] === 'hue' ? 360 :
+            ['saturation', 'value', 'lightness', 'alpha'].indexOf(item[0]) !== -1 ? 100 : 255;
+      return item[0].replace(/^./, function (match) {
+        return match.toUpperCase();
+      }) + ': ' + Math.round(parseFloat(item[1]) * times);
+    }).join('\n\t');
+  };
+  return [
+    ['Hex', this.hex()],
+    ['CSS', this.css()],
+    ['CSSA', this.cssa()],
+    ['RGB', prettify(this.rgb())],
+    ['HSV', prettify(this.hsv())],
+    ['HSL', prettify(this.hsl())],
+    ['CMYK', prettify(this.cmyk())],
+    ['JSON', JSON.stringify(this.toJSON())]
+  ].map(function (item) {
+    return item.join(':\t');
+  }).join('\n');
 });
 
 args.every(function (arg) {
-    if (typeof arg === 'string' && arg.indexOf('!') === 0) {
-        if (fn) {
-            try {
-                color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
-            } catch (err) {
-                console.error(JSON.stringify({
-                    'color': color,
-                    'function': fn,
-                    'arguments': fnArgs,
-                    'next function': arg
-                }, null, 4));
-                throw err;
-            }
-            fn = undefined;
-            fnArgs = [];
-            if (!color.isColor) {
-                return false;
-            }
-        }
-        fn = arg;
-    } else if (fn) {
-        fnArgs.push(arg);
+  if (typeof arg === 'string' && arg.indexOf('!') === 0) {
+    if (fn) {
+      try {
+        color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
+      } catch (err) {
+        console.error(JSON.stringify({
+          'color': color,
+          'function': fn,
+          'arguments': fnArgs,
+          'next function': arg
+        }, null, 4));
+        throw err;
+      }
+      fn = undefined;
+      fnArgs = [];
+      if (!color.isColor) {
+        return false;
+      }
     }
-    return true;
+    fn = arg;
+  } else if (fn) {
+    fnArgs.push(arg);
+  }
+  return true;
 });
 
 if (fn) {
-    try {
-        color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
-    } catch (err) {
-        console.error(JSON.stringify({
-            'color': color,
-            'function': fn,
-            'arguments': fnArgs
-        }, null, 4));
-        throw err;
-    }
+  try {
+    color = color.constructor.prototype[fnMap[fn.replace('!', '')]].apply(color, fnArgs);
+  } catch (err) {
+    console.error(JSON.stringify({
+      'color': color,
+      'function': fn,
+      'arguments': fnArgs
+    }, null, 4));
+    throw err;
+  }
 }
 
 if (typeof color === 'object' && color.isColor) {
-    console.log(color.dump());
+  console.log(color.dump());
 } else {
-    console.log(color);
-    if (color === false) {
-        process.exit(1);
-    }
-    if (color === true) {
-        process.exit(0);
-    }
+  console.log(color);
+  if (color === false) {
+    process.exit(1);
+  }
+  if (color === true) {
+    process.exit(0);
+  }
 }
