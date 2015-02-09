@@ -1,5 +1,11 @@
 Color-commando
 ==============
+
+[![NPM version](https://badge.fury.io/js/color-commando.svg)](http://badge.fury.io/js/color-commando)
+[![Build Status](https://travis-ci.org/Munter/node-color-commando.svg?branch=master)](https://travis-ci.org/Munter/node-color-commando)
+[![Coverage Status](https://img.shields.io/coveralls/Munter/node-color-commando.svg?style=flat)](https://coveralls.io/r/Munter/node-color-commando?branch=master)
+[![Dependency Status](https://david-dm.org/Munter/node-color-commando.svg)](https://david-dm.org/Munter/node-color-commando)
+
 This program gives you acces to lowlevel color math in a neat and programmer friendly command line interface.
 
 If you know what you want out of your color math, using a color picker and applying effects one at a time simply takes to long.
