@@ -58,13 +58,14 @@ if (!color) {
 
 onecolor.installMethod('dump', function () {
   var prettify = function (color) {
-    return color.toString().split(' ').slice(1).map(function (item) {
-      item = item.split('=');
-      var times = item[0] === 'hue' ? 360 :
-            ['saturation', 'value', 'lightness', 'alpha'].indexOf(item[0]) !== -1 ? 100 : 255;
-      return item[0].replace(/^./, function (match) {
+    return Object.keys(color).map(function (key) {
+      var channel = key.slice(1);
+      var value = color[key];
+      var times = channel === 'hue' ? 360 :
+            ['saturation', 'value', 'lightness', 'alpha'].indexOf(channel) !== -1 ? 100 : 255;
+      return channel.replace(/^./, function (match) {
         return match.toUpperCase();
-      }) + ': ' + Math.round(parseFloat(item[1]) * times);
+      }) + ': ' + Math.round(value * times);
     }).join('\n\t');
   };
   return [

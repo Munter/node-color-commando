@@ -15,10 +15,10 @@
     "bin": "./bin"
   },
   "dependencies": {
-    "onecolor": ">=2.3.0"
+    "onecolor": "^3.0.4"
   },
   "devDependencies": {
-    "jshint": "^2.6.0"
+    "jshint": "^2.9.5"
   },
   "optionalDependencies": {},
   "engines": {
